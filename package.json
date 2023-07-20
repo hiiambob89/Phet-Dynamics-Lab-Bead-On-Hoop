@@ -1,0 +1,59 @@
+{
+  "name": "bead-on-hoop",
+  "version": "1.0.0-dev.0",
+  "license": "GPL-3.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/phetsims/bead-on-hoop.git"
+  },
+  "devDependencies": {
+    "grunt": "~1.5.3"
+  },
+  "phet": {
+    "requirejsNamespace": "BEAD_ON_HOOP",
+    "simulation": true,
+    "runnable": true,
+    "preload": [
+      "../sherpa/lib/poly-decomp-0.3.0.js",
+      "../sherpa/lib/p2-0.7.1.js",
+      "../sherpa/lib/three-r104.js",
+    "../bead-on-hoop/js/common/simData.js"
+
+    ],
+    "supportedBrands": [
+      "phet",
+      "adapted-from-phet"
+    ],
+    "supportsOutputJS": true,
+    "simFeatures": {
+      "supportsDynamicLocale": true
+    }
+  },
+  "eslintConfig": {
+    "extends": "../chipper/eslint/sim_eslintrc.js",
+    "overrides": [
+      {
+        "files": [
+          "**/*.ts"
+        ],
+        "rules": {
+          "@typescript-eslint/no-explicit-any": "error",
+          "@typescript-eslint/ban-ts-comment": [
+            "error",
+            {
+              "ts-expect-error": true,
+              "ts-ignore": true,
+              "ts-check": true,
+              "ts-nocheck": true
+            }
+          ]
+        }
+      }
+    ],
+    "globals": {
+      "p2": "readonly",
+      "THREE": "readonly",
+      "decomp": "readonly"
+    }
+  }
+}

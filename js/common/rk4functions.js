@@ -38,7 +38,7 @@ export function updateVals(dt, velocity, angle, omega, radius, g, k, equations, 
         //console.log(graphVals.data.length + "" + t + "<" + graphLen)
         
         //console.log([t,y[0],y[1]]);
-        ynew = rk4(y,N,t,h,ynew,omega, r,g,k, equations, useEval);
+        ynew = rk4(y,N,t,h,ynew,omega* Math.PI/180, r,g,k, equations, useEval);
         y[0] = ynew[0];
         y[1] = ynew[1];
 

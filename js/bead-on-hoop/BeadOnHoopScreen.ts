@@ -26,7 +26,7 @@ export default class BeadOnHoopScreen extends Screen<BeadOnHoopModel, BeadOnHoop
 
     const options = optionize<BeadOnHoopScreenOptions, SelfOptions, ScreenOptions>()( {
       name: BeadOnHoopStrings.screen.nameStringProperty,
-
+      
       //TODO add default values for optional SelfOptions here
 
       //TODO add default values for optional ScreenOptions here

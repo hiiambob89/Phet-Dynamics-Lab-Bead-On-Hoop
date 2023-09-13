@@ -13,10 +13,12 @@
 
 <!-- body is only made black for the loading phase so that the splash screen is black -->
 <body style="background-color:black;">
-
+  <link rel="stylesheet" href="../bead-on-hoop/js/common/mathquill-0.10.1/mathquill.css"/>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+  <script src="../bead-on-hoop/js/common/mathquill-0.10.1/mathquill.js"></script>
 
 <script type="text/javascript">
-
+  window.MathQuill = MathQuill
   window.phet = window.phet || {};
   window.phet.chipper = window.phet.chipper || {};
   window.phet.chipper.packageObject =
@@ -44,7 +46,8 @@
           "../sherpa/lib/poly-decomp-0.3.0.js",
           "../sherpa/lib/p2-0.7.1.js",
           "../sherpa/lib/three-r104.js",
-          '../bead-on-hoop/js/common/simData.js'
+          '../bead-on-hoop/js/common/simData.js',
+          '../bead-on-hoop/js/common/mathquil.js'
 
         ],
         "supportsOutputJS": true,
@@ -129,7 +132,8 @@
     '../sherpa/lib/poly-decomp-0.3.0.js',
     '../sherpa/lib/p2-0.7.1.js',
     '../sherpa/lib/three-r104.js',
-    '../bead-on-hoop/js/common/simData.js'
+    '../bead-on-hoop/js/common/simData.js',
+          '../bead-on-hoop/js/common/mathquil.js'
   ];
 
   if ( brand === 'phet-io' ) {
@@ -137,7 +141,11 @@
       '../chipper/js/phet-io/phetioCompareAPIs.js',
       '../phet-io/js/phet-io-initialize-globals.js',
       '../bead-on-hoop/js/bead-on-hoop-phet-io-overrides.js',
-      '../bead-on-hoop/js/common/simData.js'
+      '../bead-on-hoop/js/common/simData.js',
+      '../chipper/js/phet-io/phetioCompareAPIs.js',
+      '../phet-io/js/phet-io-initialize-globals.js',
+      '../mobius/js/mobius-phet-io-overrides.js',
+          '../bead-on-hoop/js/common/mathquil.js'
 
     ] );
   }

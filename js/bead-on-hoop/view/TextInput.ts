@@ -1,7 +1,7 @@
 import Constants from '../../common/BeadOnHoopConstants.js';
 import { DOM, Display, Input, VBox, Node, KeyboardUtils } from '../../../../scenery/js/imports.js';
 import Property from '../../../../axon/js/Property.js';
-class TextInput extends Node {
+export class TextInput extends Node {
   valueSubmittedEmitter: any;
   domElement: HTMLInputElement;
   linkObj: any;

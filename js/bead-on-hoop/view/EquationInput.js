@@ -2,7 +2,7 @@ import Constants from '../../common/BeadOnHoopConstants.js';
 import { DOM, Display, Input, VBox, Node, KeyboardUtils } from '../../../../scenery/js/imports.js';
 import Property from '../../../../axon/js/Property.js';
 
-class EquationInput extends Node {
+export default class EquationInput extends Node {
   constructor( screenNode,parentDomElement, options ) {
 
     options = _.merge( {
@@ -79,5 +79,5 @@ class EquationInput extends Node {
   
 }
 
-export default EquationInput;
+
 

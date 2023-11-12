@@ -18,7 +18,8 @@
       "../sherpa/lib/p2-0.7.1.js",
       "../sherpa/lib/three-r104.js",
     "../bead-on-hoop/js/common/simData.js",
-    "../bead-on-hoop/js/common/mathquil.js"
+    "../bead-on-hoop/js/common/bundle2.js",
+    "../bead-on-hoop/js/common/d3.v7.min.js"
 
     ],
     "supportedBrands": [

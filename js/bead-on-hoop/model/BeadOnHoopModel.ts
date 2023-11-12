@@ -14,6 +14,7 @@ import Property from '../../../../axon/js/Property.js';
 import BeadOnHoopConstants from '../../common/BeadOnHoopConstants.js';
 import { simData } from '../../../../bead-on-hoop/js/common/simData.js';
 import {updateVals, getGraphData} from '../../common/rk4functions.js'
+import * as evaluateX from '../../common/bundle2.js'
 // import data from '../../../configurations/bead_var.json' assert { type: 'json' };
 type SelfOptions = {
   //TODO add options that are specific to BeadOnHoopModel here
@@ -34,6 +35,7 @@ export default class BeadOnHoopModel implements TModel {
   public velocityProp: Property<number>;
   public simSpeedProp: Property<number>;
   public graphData: simData;
+  public graphDataTest: simData;
   public ballsCords: number[];
   public prevCords: number[][];
   public project: boolean;
@@ -46,18 +48,26 @@ export default class BeadOnHoopModel implements TModel {
 
   public angle: number; 
   public velocity: number;
+  public angleTest: number; 
+  public velocityTest: number;
+
   public omega: number; // making this because due to pregenerating data the changes wont show up until datachunk is exhausted and new data generated, will have to rework for it to work like that
   public radius: number;
   public gravity: number;
   public friction: number;
   
-  
+  public thetaEQ: string;
+  public velocityEQ: string;
+  public thetaFunc;
+  public velocityFunc;
   // public 
   // public graphLen: Property<number>;
-
+  public updateGraphs: boolean;
+  public refBall: any;
   // public velocity: Number;
-
+  public validEqs: boolean;
   public constructor( providedOptions: BeadOnHoopModelOptions ) {
+    this.validEqs = true;
     //TODO
     this.paramList = {};
     for (const obj of BeadOnHoopConstants.BEAD_CONFIG) {
@@ -80,13 +90,18 @@ export default class BeadOnHoopModel implements TModel {
     this.omegaProp.link(((val)=>{this.omegaRadsProp.value = val * Math.PI/180}))
     this.omegaRadsProp.link(((val)=>{this.omegaProp.value = val / Math.PI *180}))
     this.graphUpdateInterval = .001;
+
     this.angle = this.thetaProp.value;
     this.velocity = this.velocityProp.value;
+    this.angleTest = this.thetaProp.value;
+    this.velocityTest = this.velocityProp.value;
+
     this.omega = this.omegaProp.value;
     this.radius = this.radiusProp.value;
     this.gravity = this.gravityProp.value;
     this.friction = this.frictionProp.value;
     this.graphData = new simData(this.graphUpdateInterval)
+    this.graphDataTest = new simData(this.graphUpdateInterval)
     this.ballsCords = [];
     this.prevCords = [];
     this.trailLen = 20;
@@ -97,9 +112,22 @@ export default class BeadOnHoopModel implements TModel {
       this.ballsCords.push(0)
       this.prevCords.push([0])
     }
-    this.graphData = getGraphData(this.graphUpdateInterval, this.velocity, this.angle*Math.PI/180, this.omega, this.radius, this.gravity, this.friction, {}, false, this.graphLen, this.graphData, this.timer, this.project);
+    // this.graphData = getGraphData(this.graphUpdateInterval, this.velocity, this.angle*Math.PI/180, this.omega, this.radius, this.gravity, this.friction, {}, false, this.graphLen, this.graphData, this.timer, this.project);
     this.rotation = 0;
     this.originalLen = this.graphLen;
+    // this.thetaEQ = '\\tan v'
+    this.velocityEQ = '\\frac{v}{\\sin t}'
+    this.thetaEQ = '\\frac{v}{r}'
+    // this.thetaEQ = 'r'
+    // this.velocityEQ = 'r\\cdot\\sin\\left(t\\right)\\left(o^2\\cdot\\cos\\left(t\\right)-\\frac{g}{r}\\right)-k\\cdot v'
+    // this.velocityEQ = '0'
+    this.thetaFunc = globalThis.window.evaluatex(this.thetaEQ, {k:this.friction,r:this.radius,g:this.gravity,o:this.omega*Math.PI/180}, {latex:true});
+    console.log(this.thetaEQ)
+    this.velocityFunc = globalThis.window.evaluatex(this.velocityEQ, {k:this.friction,r:this.radius,g:this.gravity,o:this.omega*Math.PI/180}, {latex:true});
+    this.graphData = getGraphData(this.graphUpdateInterval, this.velocity, this.angle*Math.PI/180, this.omega, this.radius, this.gravity, this.friction,{}, false, this.graphLen, this.graphData, this.timer, this.project);
+    this.graphDataTest = getGraphData(this.graphUpdateInterval, this.velocityTest, this.angleTest*Math.PI/180, this.omega, this.radius, this.gravity, this.friction, {thetadot:this.thetaFunc, velocitydot:this.velocityFunc}, true, this.graphLen, this.graphDataTest, this.timer, this.project);
+    this.updateGraphs = false;
+    this.refBall = {time:0, velocity:0, theta:0}
   }
   update(val: number){
     console.log(val) ;
@@ -109,89 +137,84 @@ export default class BeadOnHoopModel implements TModel {
    * Resets the model.
    */
   public reset(): void {
-    this.angle = this.thetaProp.value;
-    this.velocity = this.velocityProp.value;
-    this.omega = this.omegaProp.value;
-    this.radius = this.radiusProp.value;
-    this.gravity = this.gravityProp.value;
-    this.friction = this.frictionProp.value;
-    this.graphData = new simData(this.graphUpdateInterval)
-    this.ballsCords = [];
-    this.prevCords = [];
-    this.trailLen = 20;
-    this.graphLen = 5;
-    this.timer = 0;
-    this.project = false;
-    for (let i = 0; i < this.trailLen; i++){
-      this.ballsCords.push(0)
-      this.prevCords.push([0])
-    }
-    this.graphData = getGraphData(this.graphUpdateInterval, this.velocity, this.angle*Math.PI/180, this.omega, this.radius, this.gravity, this.friction, {}, false, this.graphLen, this.graphData, this.timer, this.project);
-    this.rotation = 0;
-    this.originalLen = this.graphLen;
-  }
+    if (this.validEqs){
+      this.angle = this.thetaProp.value;
+      this.velocity = this.velocityProp.value;
+      this.angleTest = this.thetaProp.value;
+      this.velocityTest = this.velocityProp.value;
+      this.omega = this.omegaProp.value;
+      this.radius = this.radiusProp.value;
+      this.gravity = this.gravityProp.value;
+      this.friction = this.frictionProp.value;
+      this.graphData = new simData(this.graphUpdateInterval)
+      this.graphDataTest = new simData(this.graphUpdateInterval)
+      this.ballsCords = [];
+      this.prevCords = [];
+      this.trailLen = 20;
+      this.graphLen = 5;
+      this.timer = 0;
+      this.project = false;
+      for (let i = 0; i < this.trailLen; i++){
+        this.ballsCords.push(0)
+        this.prevCords.push([0])
+      }
+      // this.thetaEQ = '\\frac{v}{r}'
+      // this.velocityEQ = 'r\\sin\\left(\\theta\\right)\\left(\\omega^2\\cos\\left(\\theta\\right)-\\frac{g}{r}\\right)-k\\cdot v'
+      
+      this.thetaFunc = globalThis.window.evaluatex(this.thetaEQ, {k:this.friction,r:this.radius,g:this.gravity,o:this.omega*Math.PI/180}, {latex:true});
+      this.velocityFunc = globalThis.window.evaluatex(this.velocityEQ, {k:this.friction,r:this.radius,g:this.gravity,o:this.omega*Math.PI/180}, {latex:true});
+      // this.graphData = getGraphData(this.graphUpdateInterval, this.velocity, this.angle*Math.PI/180, this.omega, this.radius, this.gravity, this.friction, {}, false, this.graphLen, this.graphData, this.timer, this.project);
+      this.graphData = getGraphData(this.graphUpdateInterval, this.velocity, this.angle*Math.PI/180, this.omega, this.radius, this.gravity, this.friction,{}, false, this.graphLen, this.graphData, this.timer, this.project);
+      this.graphDataTest = getGraphData(this.graphUpdateInterval, this.velocityTest, this.angleTest*Math.PI/180, this.omega, this.radius, this.gravity, this.friction,{thetadot:this.thetaFunc, velocitydot:this.velocityFunc}, true, this.graphLen, this.graphDataTest, this.timer, this.project);
+      this.rotation = 0;
+      this.originalLen = this.graphLen;
+      this.updateGraphs = true;
+      this.refBall = {time:0, velocity:0, theta:0}
+  }}
 
   /**
    * Steps the model.
    * @param dt - time step, in seconds
    */
   public step( dt: number ): void {
-    this.timer += dt*this.simSpeedProp.value;
-    this.angle = this.graphData.getTheta(this.timer);
-    this.angle = this.angle%(2*Math.PI);
-      if (this.angle < 0){
-        this.angle = 2*Math.PI - Math.abs(this.angle)
-      }
-    // console.log(this.angle *180/Math.PI)
-    // console.log(this.angle)
-    this.velocity = this.graphData.getVelocity(this.timer);
 
-    this.rotation += this.omega*dt*this.simSpeedProp.value*0.0174533;
-    if(this.timer < this.graphLen){
-      let ballAngle = this.graphData.getTheta(this.timer);
-      let ballVelocity = this.graphData.getVelocity(this.timer);
-      // updateBallGraph(timer, ballAngle, ballVelocity, graphLen, thetaGraph, velocityGraph, graphData);
-    } else {
-      this.graphLen = this.graphLen + this.originalLen; 
-      getGraphData(this.graphUpdateInterval, this.velocity, this.angle, this.omega, this.radius, this.gravity, this.friction, {}, false, this.graphLen, this.graphData, this.timer, this.project);
-      //console.log(graphData.data.length);
-      // if (thetaDivId === "variableSim-theta"){
-      //   document.getElementById("variableSim-theta").innerHTML = "";
-      //   document.getElementById("variableSim-velocity").innerHTML = "";
-      //   thetaGraph = drawTheta(graphData, graphLen, thetaDivId, "test");
-      //   velocityGraph = drawVelocity(graphData, graphLen, velocityDivId, "test");
-      // } else{
-      //   document.getElementById("staticSim-theta").innerHTML = "";
-      //   document.getElementById("staticSim-velocity").innerHTML = "";
-      //   thetaGraph = drawTheta(graphData, graphLen, thetaDivId, "reference");
-      //   velocityGraph = drawVelocity(graphData, graphLen, velocityDivId, "reference");
-      // }
-      //updateGraphData(graphLen, thetaGraph, velocityGraph, graphData);
-      // updateBallGraph(timer, angle, velocity, graphLen, thetaGraph, velocityGraph, graphData);
+
+      this.timer += dt*this.simSpeedProp.value;
+      // console.log(this.graphData)
+      this.angle = this.graphData.getTheta(this.timer);
+      if (this.project){
+        this.angle = this.angle%(2*Math.PI);
+          if (this.angle < 0){
+            this.angle = 2*Math.PI - Math.abs(this.angle)
+          }
+      }
+      this.angleTest = this.graphDataTest.getTheta(this.timer);
+      if (this.project){
+        this.angleTest = this.angleTest%(2*Math.PI);
+          if (this.angleTest < 0){
+            this.angleTest = 2*Math.PI - Math.abs(this.angleTest)
+          }
+      }
+      // console.log(this.angle *180/Math.PI)
+      // console.log(this.angle)
+      this.velocity = this.graphData.getVelocity(this.timer);
+      this.velocityTest = this.graphDataTest.getVelocity(this.timer);
+
+      this.rotation += this.omega*dt*this.simSpeedProp.value*0.0174533;
+      if(this.timer < this.graphLen){
+        let ballAngle = this.graphData.getTheta(this.timer);
+        let ballVelocity = this.graphData.getVelocity(this.timer);
+        // updateBallGraph(timer, ballAngle, ballVelocity, graphLen, thetaGraph, velocityGraph, graphData);
+      } else {
+        this.graphLen = this.graphLen + this.originalLen; 
+        // getGraphData(this.graphUpdateInterval, this.velocity, this.angle, this.omega, this.radius, this.gravity, this.friction, {}, false, this.graphLen, this.graphData, this.timer, this.project);
+        // console.log(this.angleTest)
+        getGraphData(this.graphUpdateInterval, this.velocity, this.angle, this.omega, this.radius, this.gravity, this.friction,{}, false, this.graphLen, this.graphData, this.timer, this.project);
+        getGraphData(this.graphUpdateInterval, this.velocityTest, this.angleTest, this.omega, this.radius, this.gravity, this.friction, {thetadot:this.thetaFunc, velocitydot:this.velocityFunc}, true, this.graphLen, this.graphDataTest, this.timer, this.project);
+        this.refBall = {time:this.timer, velocity:this.velocity, theta:this.angle}
+        this.updateGraphs = true;
     }
     
- 
-
-    //takes care of ball trail, and whether or not its projected on the hoop
-    if (this.project){
-      this.ballsCords.push(this.angle);
-      this.ballsCords.shift();
-    }
-    let cords = getBallPos(this.angle+3*Math.PI/2, 100);
-    let xyz = {x:cords[0]*Math.cos(this.rotation), y: cords[1], z: -cords[0]*Math.sin(this.rotation)};
-    // ball.position.set(xyz.x,xyz.y,xyz.z);
-    this.prevCords.push([xyz.x,xyz.y,xyz.z]);
-    this.prevCords.shift();
-    for (let i = 0; i < this.trailLen; i++) {
-      if (this.prevCords[i].toString() != [0].toString()){
-        if (this.project){
-          let tempCord = getBallPos(this.ballsCords[i]+3*Math.PI/2, 100);
-          // balls[i].position.set(tempCord[0]*Math.cos(hoop.rotation.y),  tempCord[1],  -tempCord[0]*Math.sin(hoop.rotation.y))
-        } else {
-          // balls[i].position.set(prevCords[i][0],prevCords[i][1],prevCords[i][2])
-      }
-    }
-    }
 
   }
 }

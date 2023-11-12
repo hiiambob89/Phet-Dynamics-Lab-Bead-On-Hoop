@@ -1,5 +1,6 @@
 import { simData } from './simData.js';
-
+import * as evaluatex from '../../../bead-on-hoop/js/common/bundle2.js'
+// globalThis.window.evaluatex = evaluatex;
 export function updateVals(dt, velocity, angle, omega, radius, g, k, equations, useEval){
     //console.log(omega)
       const N = 2;
@@ -55,23 +56,23 @@ export function updateVals(dt, velocity, angle, omega, radius, g, k, equations, 
         //console.log(ynew);
         
     }
+    
     return graphVals;
 }
   
   function derivsEval(t,y,dydt,omega,r,g,k, equations){
     try{
-      const thetadot = globalThis.window.evaluatex(equations.thetadot, {k:k,r:r,g:g,o:omega}, {latex:true});
-      dydt[0]= thetadot({v:y[1],t:y[0]});
+      
+      dydt[0]= equations.thetadot({v:y[1],t:y[0]});
       } catch (err){
-        //console.log(err);
-        document.getElementById("error-output").innerHTML="[BAD OR NO EQUATION INPUTED]";
+        console.log(err);
+        // document.getElementById("error-output").innerHTML="[BAD OR NO EQUATION INPUTED]";
       }
     
     try{
-      const velocitydot = globalThis.window.evaluatex(equations.velocitydot, {k:k,r:r,g:g,o:omega}, {latex:true});
-      dydt[1]= velocitydot({v:y[1],t:y[0]});
+      dydt[1]= equations.velocitydot({v:y[1],t:y[0]});
     } catch(err){
-      document.getElementById("error-output").innerHTML="[BAD OR NO EQUATION INPUTED]";
+      // document.getElementById("error-output").innerHTML="[BAD OR NO EQUATION INPUTED]";
     }
     
   

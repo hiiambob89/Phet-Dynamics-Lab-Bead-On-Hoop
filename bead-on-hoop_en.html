@@ -7,18 +7,50 @@
   <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1"/>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="phet-sim-level" content="development">
+  <style>
+    
+  math-field::part(virtual-keyboard-toggle) {
+    display: none;
+  }
+  .my-mathquill-input {
+  min-width: 100px; /* Set the minimum width as needed */
+  min-height: 50px;
+}
 
+.MLK__keyboard{
+  display:none;
+}
+</style>
   <title>bead-on-hoop</title>
 </head>
 
 <!-- body is only made black for the loading phase so that the splash screen is black -->
 <body style="background-color:black;">
+  <script src="../common/src/bundle2.js"></script>
   <link rel="stylesheet" href="../bead-on-hoop/js/common/mathquill-0.10.1/mathquill.css"/>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
   <script src="../bead-on-hoop/js/common/mathquill-0.10.1/mathquill.js"></script>
-
+  <script src="https://cdn.jsdelivr.net/npm/d3@7/+esm"></script>
+  <!-- <p>$$\frac{\pi}{2}$$</p> -->
+    <script src="https://unpkg.com/mathlive"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tex-math-parser"></script>
+    <script src="node_modules/evaluatex/dist/evaluatex.min.js"></script>
+    <script type="text/javascript">
+        window.evalautex = evaluatex;
+    </script>
+    <script>
+      window.d3 =d3;
+      window.evaluateTex=evaluateTex;
+      window.evaluatex = evaluatex;
+      window.MathLive = MathLive;
+      window.MathfieldElement =MathfieldElement;
+      window.addEventListener('DOMContentLoaded', 
+        () => MathLive.renderMathInDocument()
+      );
+    </script>
 <script type="text/javascript">
   window.MathQuill = MathQuill
+  // $('.mathquill-editable').mathquill('latex', '');
   window.phet = window.phet || {};
   window.phet.chipper = window.phet.chipper || {};
   window.phet.chipper.packageObject =
@@ -47,7 +79,9 @@
           "../sherpa/lib/p2-0.7.1.js",
           "../sherpa/lib/three-r104.js",
           '../bead-on-hoop/js/common/simData.js',
-          '../bead-on-hoop/js/common/mathquil.js'
+          '../bead-on-hoop/js/common/bundle2.js',
+          '../bead-on-hoop/js/common/d3.v7.min.js',
+          // "https://cdn.jsdelivr.net/npm/d3@7/+esm"
 
         ],
         "supportsOutputJS": true,
@@ -133,7 +167,10 @@
     '../sherpa/lib/p2-0.7.1.js',
     '../sherpa/lib/three-r104.js',
     '../bead-on-hoop/js/common/simData.js',
-          '../bead-on-hoop/js/common/mathquil.js'
+          '../bead-on-hoop/js/common/mathquil.js',
+          '../bead-on-hoop/js/common/bundle2.js',
+          '../bead-on-hoop/js/common/d3.v7.min.js',
+          "https://cdn.jsdelivr.net/npm/d3@7/+esm"
   ];
 
   if ( brand === 'phet-io' ) {
@@ -145,7 +182,10 @@
       '../chipper/js/phet-io/phetioCompareAPIs.js',
       '../phet-io/js/phet-io-initialize-globals.js',
       '../mobius/js/mobius-phet-io-overrides.js',
-          '../bead-on-hoop/js/common/mathquil.js'
+          '../bead-on-hoop/js/common/mathquil.js',
+          '../bead-on-hoop/js/common/bundle2.js',
+          '../bead-on-hoop/js/common/d3.v7.min.js',
+          "https://cdn.jsdelivr.net/npm/d3@7/+esm"
 
     ] );
   }

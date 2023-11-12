@@ -7,16 +7,31 @@
   <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1"/>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="phet-sim-level" content="development">
-
+  <style>
+    
+    math-field::part(virtual-keyboard-toggle) {
+      display: none;
+    }
+    .my-mathquill-input {
+    min-width: 100px; /* Set the minimum width as needed */
+    min-height: 50px;
+  }
+  
+  .MLK__keyboard{
+    display:none;
+  }
+  </style>
   <title>bead-on-hoop</title>
 </head>
 
 <!-- body is only made black for the loading phase so that the splash screen is black -->
 <body style="background-color:black;">
-
+  <link rel="stylesheet" href="../bead-on-hoop/js/common/mathquill-0.10.1/mathquill.css"/>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+  <script src="../bead-on-hoop/js/common/mathquill-0.10.1/mathquill.js"></script>
 
 <script type="text/javascript">
-
+window.MathQuill = MathQuill
   window.phet = window.phet || {};
   window.phet.chipper = window.phet.chipper || {};
   window.phet.chipper.packageObject =
@@ -41,7 +56,8 @@
           "../sherpa/lib/three-r104.js",
           "../bead-on-hoop/js/common/simData.js",
           "../bead-on-hoop/js/common/bundle2.js",
-          "../bead-on-hoop/js/common/d3.v7.min.js"
+          "../bead-on-hoop/js/common/d3.v7.min.js",
+          "../bead-on-hoop/js/common/mathquill.js"
         ],
         "supportedBrands": [
           "phet",

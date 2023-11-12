@@ -19,8 +19,8 @@
       "../sherpa/lib/three-r104.js",
     "../bead-on-hoop/js/common/simData.js",
     "../bead-on-hoop/js/common/bundle2.js",
-    "../bead-on-hoop/js/common/d3.v7.min.js"
-
+    "../bead-on-hoop/js/common/d3.v7.min.js",
+    "../bead-on-hoop/js/common/mathquill.js"
     ],
     "supportedBrands": [
       "phet",

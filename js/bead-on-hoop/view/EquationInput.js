@@ -1,7 +1,8 @@
 import Constants from '../../common/BeadOnHoopConstants.js';
 import { DOM, Display, Input, VBox, Node, KeyboardUtils } from '../../../../scenery/js/imports.js';
 import Property from '../../../../axon/js/Property.js';
-
+// import {getInterface} from '../../common/mathquill.js'
+// var MathQuill = require("../../common/mathquill.js");
 export default class EquationInput extends Node {
   constructor( screenNode,parentDomElement, options ) {
 
@@ -40,7 +41,10 @@ export default class EquationInput extends Node {
     }
     const domElement = parentDomElement; 
 
-    const mathField = globalThis.window.MathQuill.getInterface(2).MathField(domElement, {
+    const mathField = window.MathQuill.getInterface(2).MathField(domElement, {
+    // console.log(getInterface)
+    // console.log(MathQuill)
+    // const mathField = MathQuill.getInterface(2).MathField(domElement, {
       handlers: {
         edit: function() {
           options.model[options.equation]= mathField.latex().replaceAll('\\theta',' t').replaceAll('\\omega',' o');

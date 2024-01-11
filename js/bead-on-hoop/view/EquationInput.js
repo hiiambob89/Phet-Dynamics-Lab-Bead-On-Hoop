@@ -24,8 +24,8 @@ export default class EquationInput extends Node {
       equation: null,
       
       verifyEq: null,
-      
-      errField: null,
+      dom:null,
+      // errField: null,
 
       linkObj: null,
 
@@ -38,21 +38,27 @@ export default class EquationInput extends Node {
     this.valueSubmittedEmitter = new phet.axon.Emitter();
     this.writeToEquation = function(text){
       this.mathField.write(text)
+      // options.model[options.equation]= mathField.latex().replaceAll('\\theta',' t').replaceAll('\\omega',' o');
+      // options.model.validEqs = options.verifyEq(domElement, options.model);
+
     }
     const domElement = parentDomElement; 
-
+    this.domElement = options.dom;
     const mathField = window.MathQuill.getInterface(2).MathField(domElement, {
     // console.log(getInterface)
     // console.log(MathQuill)
     // const mathField = MathQuill.getInterface(2).MathField(domElement, {
       handlers: {
         edit: function() {
+          // console.log("balkjsdflajsdbfaklsjdf")
           options.model[options.equation]= mathField.latex().replaceAll('\\theta',' t').replaceAll('\\omega',' o');
-          console.log(mathField.latex())
-          options.model.validEqs = options.verifyEq(options.errField, options.model);
-        }
+          // console.log(mathField.latex())
+          options.model.validEqs = options.verifyEq(domElement, options.model);
+        },
+
       }
     });
+    // console.log("hereee",mathField)
     this.mathField = mathField;
     mathField.write(options.initialText);
 

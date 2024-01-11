@@ -13,7 +13,7 @@ import beadOnHoop from '../../beadOnHoop.js';
 import BeadOnHoopModel from '../model/BeadOnHoopModel.js';
 import optionize from '../../../../phet-core/js/optionize.js';
 import Property from '../../../../axon/js/Property.js';
-import { AlignBox, DOM, FlowBox, HBox, HSeparator, Rectangle, RichText, VBox } from '../../../../scenery/js/imports.js';
+import { AlignBox, Color, DOM, FlowBox, HBox, HSeparator, LinearGradient, Rectangle, RichText, VBox } from '../../../../scenery/js/imports.js';
 import HSlider from '../../../../sun/js/HSlider.js';
 import Range from '../../../../dot/js/Range.js';
 import {Text} from '../../../../scenery/js/imports.js';
@@ -37,6 +37,9 @@ import EquationInput from './EquationInput.js';
 import TextPushButton from '../../../../sun/js/buttons/TextPushButton.js';
 import ToggleSwitch from '../../../../sun/js/ToggleSwitch.js';
 import Dimension2 from '../../../../dot/js/Dimension2.js';
+import Vector2 from '../../../../dot/js/Vector2.js';
+import Panel from '../../../../sun/js/Panel.js';
+import RectangularToggleButton from '../../../../sun/js/buttons/RectangularToggleButton.js';
 // import * as THREE from '../../../../chipper/node_modules/@types/three/index.d.js';
 // import * as THREE from 'THREE';
 // import * as MathQuill  from '../../common/mathquill.min.js';
@@ -104,7 +107,7 @@ export default class BeadOnHoopScreenView extends ScreenView {
       tandem: options.tandem.createTandem( 'resetAllButton' )
     } );
     this.addChild( resetAllButton );
-    this.graphSize = window.innerWidth/4.5;
+    this.graphSize = window.innerWidth/5;
     this.model = model;
     this.omega = model.omegaProp
     this.rotation = 0;
@@ -134,27 +137,27 @@ export default class BeadOnHoopScreenView extends ScreenView {
     this.refVelocityGraph = drawVelocity( model.graphData, model.graphLen, 'staticSim-velocity', 'reference',this.graphSize );
     this.refVelocityGraph = new phet.scenery.DOM( this.refVelocityGraph );
     this.rootNode.addChild( this.refVelocityGraph );
-    this.refVelocityGraph.centerBottom = new phet.dot.Vector2( (window.innerWidth*2.7) / 4, window.innerHeight/2-20 );
+    this.refVelocityGraph.centerBottom = new phet.dot.Vector2( (window.innerWidth*2.7) / 4, window.innerHeight/2.2-20 );
 
 
     testVelocityGraph.id = 'variableSim-velocity';
     this.testVelocityGraph = drawVelocity( model.graphDataTest, model.graphLen, 'variableSim-velocity', 'test',this.graphSize );
     this.testVelocityGraph = new phet.scenery.DOM( this.testVelocityGraph );
     this.rootNode.addChild( this.testVelocityGraph );
-    this.testVelocityGraph.centerBottom = new phet.dot.Vector2( (window.innerWidth*2.7) / 4, window.innerHeight*1.8/2-20 );
+    this.testVelocityGraph.centerBottom = new phet.dot.Vector2( (window.innerWidth*2.7) / 4, window.innerHeight*1.8/2.2-20 );
 
     refThetaGraph.id = 'staticSim-theta';
     this.refThetaGraph = drawTheta( model.graphData, model.graphLen, 'staticSim-theta', 'reference',this.graphSize );
     this.refThetaGraph = new phet.scenery.DOM( this.refThetaGraph );
     this.rootNode.addChild( this.refThetaGraph );
-    this.refThetaGraph.centerBottom = new phet.dot.Vector2( this.testVelocityGraph.leftBottom.x + this.graphSize*1.45, window.innerHeight/2-20 );
+    this.refThetaGraph.centerBottom = new phet.dot.Vector2( this.testVelocityGraph.leftBottom.x + this.graphSize*1.45, window.innerHeight/2.2-20 );
 
 
     testThetaGraph.id = 'variableSim-theta';
     this.testThetaGraph = drawTheta( model.graphDataTest, model.graphLen, 'variableSim-theta', 'test',this.graphSize );
     this.testThetaGraph = new phet.scenery.DOM( this.testThetaGraph );
     this.rootNode.addChild( this.testThetaGraph );
-    this.testThetaGraph.centerBottom = new phet.dot.Vector2( this.testVelocityGraph.leftBottom.x + this.graphSize*1.45, window.innerHeight*1.8/2-20 );
+    this.testThetaGraph.centerBottom = new phet.dot.Vector2( this.testVelocityGraph.leftBottom.x + this.graphSize*1.45, window.innerHeight*1.8/2.2-20 );
 
 
 
@@ -167,10 +170,10 @@ export default class BeadOnHoopScreenView extends ScreenView {
   setInterval(() => {
       if (window.innerWidth !== oldWidth || window.innerHeight !== oldHeight) {
           // Update the centerBottom property of each graph
-          this.refVelocityGraph.centerBottom = new phet.dot.Vector2( (window.innerWidth*2.7) / 4, window.innerHeight/2-20 );
-          this.testVelocityGraph.centerBottom = new phet.dot.Vector2( (window.innerWidth*2.7) / 4, window.innerHeight*1.8/2-20 );
-          this.refThetaGraph.centerBottom = new phet.dot.Vector2( this.testVelocityGraph.leftBottom.x + this.graphSize*1.45, window.innerHeight/2-20 );
-          this.testThetaGraph.centerBottom = new phet.dot.Vector2( this.testVelocityGraph.leftBottom.x + this.graphSize*1.45, window.innerHeight*1.8/2-20 );
+          this.refVelocityGraph.centerBottom = new phet.dot.Vector2( (window.innerWidth*2.7) / 4, window.innerHeight/2.2-20 );
+          this.testVelocityGraph.centerBottom = new phet.dot.Vector2( (window.innerWidth*2.7) / 4, window.innerHeight*1.8/2.2-20 );
+          this.refThetaGraph.centerBottom = new phet.dot.Vector2( this.testVelocityGraph.leftBottom.x + this.graphSize*1.45, window.innerHeight/2.2-20 );
+          this.testThetaGraph.centerBottom = new phet.dot.Vector2( this.testVelocityGraph.leftBottom.x + this.graphSize*1.45, window.innerHeight*1.8/2.2-20 );
 
           oldWidth = window.innerWidth;
           oldHeight = window.innerHeight;
@@ -195,133 +198,157 @@ export default class BeadOnHoopScreenView extends ScreenView {
     const exRichText = new RichText('✎');
     const simSpeedSlider = new HSlider(model.simSpeedProp, new Range(0,Number(3)), {helpText: 'Simulation Speed'});
     // simSpeedSlider.setHelpText('Simulation Speed')
+    const heightDiff = simSpeedSlider.height-exText.height;
     const exampleButton = new RoundToggleButton( buttonRadius, false, true, {radius:toggleRadius});
-    var textVBox = new VBox({ align: 'left',children:[
+    const sliderGap = new Rectangle(0,0,0,5);
+    var textVBoxConstants = new VBox({ align: 'left',children:[
       // new Rectangle(0,0,0,exampleSlider.height-exText.height),
+      new Rectangle(0,0,0,simSpeedSlider.height-exText.height+ sliderGap.height),
       new phet.scenery.Text("radius (r)", {fontSize: fontSize, textAlign: 'left'}),
-      new Rectangle(0,0,0,simSpeedSlider.height-exText.height),
+      new Rectangle(0,0,0,simSpeedSlider.height-exText.height+ sliderGap.height),
       new phet.scenery.Text("gravity (g)", {fontSize: fontSize, textAlign: 'left'}),
-      new Rectangle(0,0,0,simSpeedSlider.height-exText.height),
+      new Rectangle(0,0,0,simSpeedSlider.height-exText.height+ sliderGap.height),
       new phet.scenery.Text("friction (k)", {fontSize: fontSize, textAlign: 'left'}),
-      new Rectangle(0,0,0,simSpeedSlider.height-exText.height),
-      new phet.scenery.Text("omega (ω)", {fontSize: fontSize, textAlign: 'left'}),
-      new Rectangle(0,0,0,simSpeedSlider.height-exText.height),
-      new phet.scenery.Text("omegaRads (ω)", {fontSize: fontSize, textAlign: 'left'}),
-      new Rectangle(0,0,0,simSpeedSlider.height-exText.height),
-      new phet.scenery.Text("theta (θ)", {fontSize: fontSize, textAlign: 'left'}),
-      new Rectangle(0,0,0,simSpeedSlider.height-exText.height),
-      new phet.scenery.Text("velocity (v)", {fontSize: fontSize, textAlign: 'left'}), 
-      new Rectangle(0,0,0,simSpeedSlider.height-exText.height),
-      new phet.scenery.Text("simSpeed", {fontSize: fontSize, textAlign: 'left'}),
+      new Rectangle(0,0,0,simSpeedSlider.height-exText.height+ sliderGap.height),
+      new phet.scenery.Text("ang. vel. (ω)", {fontSize: fontSize, textAlign: 'left'}),
+      new Rectangle(0,0,0,simSpeedSlider.height-exText.height+ sliderGap.height),
+      new phet.scenery.Text("ang. vel. (ω)", {fontSize: fontSize, textAlign: 'left'}),
+      new Rectangle(0,0,0,simSpeedSlider.height-exText.height+ sliderGap.height),
 
     ]})
 
-    var sliderVbox = new VBox({children:[
+    var textVBoxInitial = new VBox({ align: 'left',children:[
+
+      new Rectangle(0,0,0,simSpeedSlider.height-exText.height+ sliderGap.height),
+      new phet.scenery.Text("ang. pos. (θ₀)", {fontSize: fontSize, textAlign: 'left'}),
+      new Rectangle(0,0,0,simSpeedSlider.height-exText.height+ sliderGap.height),
+      new phet.scenery.Text("velocity (v₀)", {fontSize: fontSize, textAlign: 'left'}), 
+      new Rectangle(0,0,0,simSpeedSlider.height-exText.height+ sliderGap.height),
+
+    ]})
+
+    var sliderVboxConstants = new VBox({children:[
+      new Rectangle(0,0,0,5),
       new HSlider(model.radiusProp, new Range(0.1,Number(100))),
+      new Rectangle(0,0,0,5),
       new HSlider(model.gravityProp, new Range(0,Number(100))), 
+      new Rectangle(0,0,0,5),
       new HSlider(model.frictionProp, new Range(0,Number(100))),
-      new HSlider(model.omegaProp, new Range(0,Number(5000))), 
+      new Rectangle(0,0,0,5),
       new HSlider(model.omegaRadsProp, new Range(0,Number(90))),
+      new Rectangle(0,0,0,5),
+      new HSlider(model.omegaProp, new Range(0,Number(5000))), 
+      new Rectangle(0,0,0,5),
+    ]})
+    var sliderVboxInitial = new VBox({children:[
+      new Rectangle(0,0,0,5),
       new HSlider(model.thetaProp, new Range(0,Number(360))), 
+      new Rectangle(0,0,0,5),
       new HSlider(model.velocityProp, new Range(0,Number(10))),
-      simSpeedSlider,
-
+      new Rectangle(0,0,0,5),
+      
     ]})
     
-    
 
-    var buttonVBox = new VBox({children:[
+    var buttonVBoxConstants = new VBox({children:[
+      new Rectangle(0,0,0,simSpeedSlider.height - exRichText.height ),
       new RoundToggleButton( buttonRadius, false, true, {radius:toggleRadius}),
       new RichText('✎'),
-      new Rectangle(0,0,0,simSpeedSlider.height - exRichText.height),
+      new Rectangle(0,0,0,simSpeedSlider.height - exRichText.height + sliderGap.height),
       new RoundToggleButton( buttonGravity, false, true, {radius:toggleRadius}),
       new RichText('✎'),
-      new Rectangle(0,0,0,simSpeedSlider.height - exRichText.height),
+      new Rectangle(0,0,0,simSpeedSlider.height - exRichText.height + sliderGap.height),
       new RoundToggleButton( buttonFriction, false, true, {radius:toggleRadius}),
       new RichText('✎'),
-      new Rectangle(0,0,0,simSpeedSlider.height - exRichText.height),
-      new RoundToggleButton( buttonOmega, false, true, {radius:toggleRadius}),
-      new RichText('✎'),
-      new Rectangle(0,0,0,simSpeedSlider.height - exRichText.height),
+      new Rectangle(0,0,0,simSpeedSlider.height - exRichText.height + sliderGap.height),
       new RoundToggleButton( buttonOmegaRads, false, true, {radius:toggleRadius}),
       new RichText('✎'),
-      new Rectangle(0,0,0,simSpeedSlider.height - exRichText.height),
+      new Rectangle(0,0,0,simSpeedSlider.height - exRichText.height + sliderGap.height),
+      new RoundToggleButton( buttonOmega, false, true, {radius:toggleRadius}),
+      new RichText('✎'),
+      new Rectangle(0,0,0,simSpeedSlider.height - exRichText.height ),
+
+    ]})
+    var buttonVBoxInitial = new VBox({children:[
+      new Rectangle(0,0,0,simSpeedSlider.height - exRichText.height + sliderGap.height),
       new RoundToggleButton( buttonTheta, false, true, {radius:toggleRadius}),
       new RichText('✎'),
-      new Rectangle(0,0,0,simSpeedSlider.height - exRichText.height),
+      new Rectangle(0,0,0,simSpeedSlider.height - exRichText.height + sliderGap.height),
       new RoundToggleButton( buttonVelocity, false, true, {radius:toggleRadius}),
       new RichText('✎'),
-      new Rectangle(0,0,0,simSpeedSlider.height - exRichText.height),
-      new RoundToggleButton( buttonSimSpeed, false, true, {radius:toggleRadius}),
-      new RichText('✎'),
-      new Rectangle(0,0,0,simSpeedSlider.height - exRichText.height),
+      new Rectangle(0,0,0,simSpeedSlider.height - exRichText.height + sliderGap.height),
+      
 
     ]})
 
-    var dynamicTextVBox = new VBox({align: 'left',children:[
+    var dynamicTextVBoxConstants = new VBox({align: 'left',children:[
       new HBox({children: [
+        new Rectangle(0,0,3,0),
         new RichText(new DerivedProperty([model.radiusProp], (value) => {return String(Number(value).toFixed(2))})),
         new phet.scenery.Text(" m", {fontSize: fontSize, textAlign: 'left'})
       ]}),
-      new Rectangle(0,0,0,simSpeedSlider.height-exText.height),
+      new Rectangle(0,0,0,simSpeedSlider.height-exText.height + sliderGap.height),
       new HBox({children: [
+        new Rectangle(0,0,3,0),
         new RichText(new DerivedProperty([model.gravityProp], (value) => {return String(Number(value).toFixed(2))})),
         new phet.scenery.Text(" m/s^2", {fontSize: fontSize, textAlign: 'left'})
       ]}),
-      new Rectangle(0,0,0,simSpeedSlider.height-exText.height),
+      new Rectangle(0,0,0,simSpeedSlider.height-exText.height + sliderGap.height),
       new HBox({children: [
+        new Rectangle(0,0,3,0),
         new RichText(new DerivedProperty([model.frictionProp], (value) => {return String(Number(value).toFixed(2))})),
         // new phet.scenery.Text(" units", {fontSize: fontSize, textAlign: 'left'})
       ]}),
-      new Rectangle(0,0,0,simSpeedSlider.height-exText.height),
+      new Rectangle(0,0,0,simSpeedSlider.height-exText.height + sliderGap.height),
       new HBox({children: [
-        new RichText(new DerivedProperty([model.omegaProp], (value) => {return String(Number(value).toFixed(2))})),
-        new phet.scenery.Text(" °/s", {fontSize: fontSize, textAlign: 'left'})
-      ]}),
-      new Rectangle(0,0,0,simSpeedSlider.height-exText.height),
-      new HBox({children: [
+        new Rectangle(0,0,3,0),
         new RichText(new DerivedProperty([model.omegaRadsProp], (value) => {return String(Number(value).toFixed(2))})),
         new phet.scenery.Text(" rad/s", {fontSize: fontSize, textAlign: 'left'})
       ]}),
-      new Rectangle(0,0,0,simSpeedSlider.height-exText.height),
+      new Rectangle(0,0,0,simSpeedSlider.height-exText.height + sliderGap.height),
       new HBox({children: [
+        new Rectangle(0,0,3,0),
+        new RichText(new DerivedProperty([model.omegaProp], (value) => {return String(Number(value).toFixed(2))})),
+        new phet.scenery.Text(" °/s", {fontSize: fontSize, textAlign: 'left'})
+      ]}),
+
+    ]});
+    var dynamicTextVBoxInitial = new VBox({align: 'left',children:[
+      new HBox({children: [
+        new Rectangle(0,0,3,0),
         new RichText(new DerivedProperty([model.thetaProp], (value) => {return String(Number(value).toFixed(2))})),
         new phet.scenery.Text(" °", {fontSize: fontSize, textAlign: 'left'})
       ]}),
-      new Rectangle(0,0,0,simSpeedSlider.height-exText.height),
+      new Rectangle(0,0,0,simSpeedSlider.height-exText.height + sliderGap.height),
       new HBox({children: [
+        new Rectangle(0,0,3,0),
         new RichText(new DerivedProperty([model.velocityProp], (value) => {return String(Number(value).toFixed(2))})),
         new phet.scenery.Text(" m/s", {fontSize: fontSize, textAlign: 'left'})
       ]}),
-      new Rectangle(0,0,0,simSpeedSlider.height-exText.height),
-      new HBox({children: [
-        new RichText(new DerivedProperty([model.simSpeedProp], (value) => {return String(Number(value).toFixed(2))})),
-        new phet.scenery.Text(" x", {fontSize: fontSize, textAlign: 'left'})
-      ]}),
+      
+      
+
     ]});
-    
-    //button vbox here use:, {radius:5}
-    // rich text vbox here
-    // textVBox.rightCenter = new phet.dot.Vector2((window.innerWidth) / 6, window.innerHeight/4 );
-    
-    // textVBox.centerBottom = new phet.dot.Vector2( window.innerWidth/2, , window.innerHeight/4 );
-    // console.log(this.height/63)
-    textVBox.leftTop = new phet.dot.Vector2( -this.width/.6,  this.layoutBounds.maxY/10 );
-    sliderVbox.leftCenter = new phet.dot.Vector2( textVBox.rightCenter.x, textVBox.rightCenter.y);
-    buttonVBox.leftCenter = new phet.dot.Vector2( sliderVbox.rightCenter.x+10, sliderVbox.rightCenter.y);
-    dynamicTextVBox.leftCenter = new phet.dot.Vector2( buttonVBox.rightCenter.x+10, buttonVBox.rightCenter.y);
+    const panelWidth = new HBox({children:[textVBoxConstants,sliderVboxConstants,buttonVBoxConstants,dynamicTextVBoxConstants]}).width
 
-    this.addChild(textVBox);
-    this.addChild(sliderVbox);
-    this.addChild(buttonVBox);
-    this.addChild(dynamicTextVBox);
-
+    const titleInitial = new RichText("Initial Conditions");
+    const panelInitial = new Panel(new VBox({align: 'left', children:[titleInitial, new HBox({children:[textVBoxInitial,sliderVboxInitial,buttonVBoxInitial,new Rectangle(0,0,20,0),dynamicTextVBoxInitial]}), new Rectangle(0,0,panelWidth,0)]}),{fill: new Color(210,210,210)})
+    this.addChild(panelInitial)
+    const titleConstants = new RichText("Constants");
+    const panelConstants = new Panel(new VBox({align: 'left', children:[titleConstants, new HBox({children:[textVBoxConstants,sliderVboxConstants,buttonVBoxConstants,dynamicTextVBoxConstants]})]}),{fill: new Color(210,210,210)})
+    this.addChild(panelConstants)
+    const totalWidth = (panelInitial.width)
+    panelConstants.leftTop = new phet.dot.Vector2( -totalWidth+window.innerWidth/10,  10 );
+    panelInitial.centerTop = new phet.dot.Vector2(panelConstants.centerBottom.x, panelConstants.centerBottom.y + 10)
     
 
-    const errField = new phet.scenery.Text("", {fontSize: fontSize, textAlign: false});
+    console.log('width',document.body.clientWidth)
+    console.log('width',window.innerWidth)
+    console.log('maxX', this.layoutBounds.maxX)
 
     
-  
+
+
     const velocityDOM = document.createElement( 'span' ); 
     const thetaDOM = document.createElement( 'span' ); 
     velocityDOM.classList.add("my-mathquill-input");
@@ -333,7 +360,7 @@ export default class BeadOnHoopScreenView extends ScreenView {
         model:model,
         equation: 'velocityEQ',
         verifyEq:verifyEq,
-        errField:errField,
+        dom:velocityDOM,
         focusedEq:this.focusedEq
       }
       
@@ -345,7 +372,7 @@ export default class BeadOnHoopScreenView extends ScreenView {
         model:model,
         equation: 'thetaEQ',
         verifyEq:verifyEq,
-        errField:errField,
+        dom:thetaDOM,
         focusedEq:this.focusedEq
       }
       
@@ -354,7 +381,6 @@ export default class BeadOnHoopScreenView extends ScreenView {
       this.focusedEq = [model.velocityEQ,velocityField,velocityField.writeToEquation];
       const focusedEq = [this.focusedEq]
       const velBox = new HBox({children: [velocityField]})
-      velBox.centerBottom = new phet.dot.Vector2( this.layoutBounds.maxX/3, window.innerHeight - 550 );
       // velocityField.centerBottom = new phet.dot.Vector2( this.layoutBounds.maxX/3, window.innerHeight - 550 );
       
       
@@ -369,10 +395,7 @@ export default class BeadOnHoopScreenView extends ScreenView {
         console.log( 'Click inside velocity equation detected' );
       }
     } );
-    this.addChild(velBox)
     const thetaBox = new HBox({children: [thetaField]})
-    thetaBox.centerBottom = new phet.dot.Vector2( this.layoutBounds.maxX/3, window.innerHeight - 500 );
-    this.addChild(thetaBox)
     thetaBox.addInputListener( { // try making it just to size of mathquil inputs? and using that?
     down: function( event ) {
       // Check if the click was inside your node
@@ -382,59 +405,75 @@ export default class BeadOnHoopScreenView extends ScreenView {
       console.log( 'Click inside theta equation detected' );
     }
   } );
-    // velocityDOM.addEventListener("click", ()=>{this.focusedEq = [model.velocityEQ,velocityField];velocityField.mathField.focus();console.log('clicked mathquil');sliders.focus()});
-    // thetaDOM.addEventListener("click", ()=>{this.focusedEq = [model.thetaEQ,thetaField];thetaField.mathField.focus();console.log('clicked mathquil');this.sceneNode.focus();sliders.focus()});
-    const test = new phet.scenery.Text("", {fontSize: fontSize, textAlign: false});
-    this.addChild(test)
-        // thetaField.centerBottom = new phet.dot.Vector2( this.layoutBounds.maxX/3, window.innerHeight - 500 );
-        velBox.centerBottom = new phet.dot.Vector2( this.width/7.7, this.layoutBounds.maxY/1.18 );
-        thetaBox.leftCenter = new phet.dot.Vector2( velBox.leftCenter.x, velBox.leftCenter.y + velBox.height + 5  );
 
         var thetadot = document.createElement('span');
         thetadot.innerHTML= '<span>θ&#x307;</span>=  ';
         const thetadotDOM = new phet.scenery.DOM((thetadot));
-        thetadotDOM.rightCenter = new phet.dot.Vector2( thetaBox.leftCenter.x-5, thetaBox.leftCenter.y );
-        this.addChild(thetadotDOM);
+        // thetadotDOM.rightCenter = new phet.dot.Vector2( thetaBox.leftCenter.x-5, thetaBox.leftCenter.y )
 
         var vdot = document.createElement('span');
         vdot.innerHTML= '<span>v&#x307;</span>=  ';
         const vdotDOM = new phet.scenery.DOM((vdot));
-        vdotDOM.rightCenter = new phet.dot.Vector2( velBox.leftCenter.x-5, velBox.leftCenter.y );
-        this.addChild(vdotDOM);
-        // velocityField.left = new phet.dot.Vector2( thetaField.left, window.innerHeight - 550 );
 
-        errField.leftCenter = new phet.dot.Vector2( thetaBox.leftCenter.x, thetaBox.centerBottom.y+20 );
-        this.addChild(errField)
-      // velocityField.equationInputNode.addEventListener("onclick", ()=>{this.focusedEq = [model.velocityEQ,velocityField];velocityField.mathField.focus();console.log('clicked mathquil')})
-      
       const buttonAddTheta = new Property<boolean>(false);
-      buttonAddTheta.lazyLink(() => {console.log(this.focusedEq[2]);this.focusedEq[1].writeToEquation('\\theta');this.focusedEq[0] = this.focusedEq[1].getElementValue().replaceAll('\\theta',' t').replaceAll('\\omega',' o');console.log(this.focusedEq[0]);model.validEqs = verifyEq( errField, model);this.focusedEq[1].mathField.focus()}) 
+      buttonAddTheta.lazyLink(() => {console.log(this.focusedEq[2]);this.focusedEq[1].writeToEquation('\\theta');this.focusedEq[0] = this.focusedEq[1].getElementValue().replaceAll('\\theta',' t').replaceAll('\\omega',' o');console.log(this.focusedEq[0]);this.focusedEq[1].mathField.focus()}) 
       // console.log(this.focusedEq[1].value,'bruuuh')
       const buttonAddOmega = new Property<boolean>(false);
-      buttonAddOmega.lazyLink(() => {this.focusedEq[1].writeToEquation('\\omega');this.focusedEq[0] = this.focusedEq[1].getElementValue().replaceAll('\\theta',' t').replaceAll('\\omega',' o');console.log(this.focusedEq[0]);model.validEqs = verifyEq( errField, model);this.focusedEq[1].mathField.focus()}) 
+      buttonAddOmega.lazyLink(() => {this.focusedEq[1].writeToEquation('\\omega');this.focusedEq[0] = this.focusedEq[1].getElementValue().replaceAll('\\theta',' t').replaceAll('\\omega',' o');console.log(this.focusedEq[0]);this.focusedEq[1].mathField.focus()}) 
       
-      this.buttonAddThetaDOM = new RoundToggleButton( buttonAddTheta, false, true, {radius:10})
+      const buttonAddThetaDOM = new RectangularToggleButton( buttonAddTheta, false, true,{minWidth:70, minHeight:25, content:new RichText('insert θ')})
+    
+      const buttonAddOmegaDOM = new RectangularToggleButton( buttonAddOmega, false, true,{minWidth:70, minHeight:25, content:new RichText('insert ω')})
+ 
+      const equationPanel = new Panel(new VBox({align:'left',children:[
+        
+        new HBox({children:[buttonAddThetaDOM,new Rectangle(0,0,50,0),buttonAddOmegaDOM,]}),
+        new Rectangle(0,0,0,10),
+        new HBox({children:[vdotDOM,velBox]}),
+        new Rectangle(0,0,0,30),
+        new HBox({children:[thetadotDOM,thetaBox]}),
+        new Rectangle(0,0,panelWidth,0),
+        new Rectangle(0,0,0,20),
 
-      this.addChild(this.buttonAddThetaDOM)
+      ]}),{fill: new Color(210,210,210)});
+      this.addChild(equationPanel);
+      equationPanel.leftTop = new phet.dot.Vector2(panelInitial.leftBottom.x, panelInitial.leftBottom.y + 10);
+      resetAllButton.leftBottom = new phet.dot.Vector2(equationPanel.rightBottom.x+5, equationPanel.rightBottom.y )
       
+      // velBox.leftCenter = new phet.dot.Vector2(panelInitial.leftBottom.x+ vdotDOM.width + 5,  equationPanel.centerTop.y)
+      // thetaBox.leftCenter = new phet.dot.Vector2(panelInitial.leftBottom.x+ thetadotDOM.width + 10, equationPanel.centerBottom.y - 2*thetaBox.height-15 )
       
-      this.buttonAddOmegaDOM = new RoundToggleButton( buttonAddOmega, false, true, {radius:10})
-      this.addChild(this.buttonAddOmegaDOM)
       // this.addChild(velocityField);
       // this.addChild(thetaField)
-      this.thetaBox = thetaBox;
-      this.velBox = velBox;
+
       this.project = true;
       this.projectTemp = this.project;
       const projectSwitch = new Property<boolean>(this.project);
       projectSwitch.lazyLink(()=>{this.projectTemp = !this.projectTemp})
+      const visualBox = new VBox({align: 'left', children:[
+        new HBox({children:[
+          new phet.scenery.Text("simSpeed", {fontSize: fontSize, textAlign: 'left'}),
+          simSpeedSlider,
+          new RoundToggleButton( buttonSimSpeed, false, true, {radius:toggleRadius}),
+          new RichText('✎'),
+          new Rectangle(0,0,0,simSpeedSlider.height - exRichText.height + sliderGap.height),
+          new HBox({children: [
+          new Rectangle(0,0,6,0),
+          new RichText(new DerivedProperty([model.simSpeedProp], (value) => {return String(Number(value).toFixed(2))})),
+          new phet.scenery.Text(" x", {fontSize: fontSize, textAlign: 'left'})
+        ]}),]}),
+        new Rectangle(0,0,0,5),
+        new HBox({children:[
+          new RichText('Project trail onto hoop?'),
+          new Rectangle(0,0,5,0),
+          new ToggleSwitch(projectSwitch, false, true, {size:new Dimension2(40, 15)}),
+        ]})
+      ]});
+      
+      this.addChild(visualBox)
+      
+      // projectLabel.leftCenter = new phet.dot.Vector2(textVBox.leftCenter.x+ 10, textVBox.centerBottom.y + 30)
 
-      const projectSwitchDOM = new ToggleSwitch(projectSwitch, false, true, {size:new Dimension2(40, 15)})
-      const projectLabel = new RichText('Project trail onto hoop?');
-      this.addChild(projectLabel)
-      projectLabel.leftCenter = new phet.dot.Vector2(textVBox.leftCenter.x+ 10, textVBox.centerBottom.y + 30)
-      projectSwitchDOM.leftCenter = new phet.dot.Vector2(projectLabel.rightCenter.x + 10, projectLabel.leftCenter.y)
-      this.addChild(projectSwitchDOM);
       const referenceLabel = new RichText('Reference:');
       const testLabel = new RichText('Test:');
       referenceLabel.leftCenter = new phet.dot.Vector2(320,10)
@@ -566,7 +605,7 @@ export default class BeadOnHoopScreenView extends ScreenView {
         model.reset()
         this.reset()
       }
-      for (var slider of sliderVbox._children ){
+      for (var slider of sliderVboxConstants._children.concat(sliderVboxInitial._children) ){
 
         console.log(slider === simSpeedSlider)
         if (slider !== simSpeedSlider){
@@ -607,6 +646,7 @@ export default class BeadOnHoopScreenView extends ScreenView {
         } )
         }
       }
+
     buttonRadius.lazyLink(()=>{model.radiusProp.value = Number(window.prompt("Enter value for radius:"));reset();}) 
     buttonGravity.lazyLink(()=>{model.gravityProp.value = Number(window.prompt("Enter value for gravity:"));reset();})
     buttonFriction.lazyLink(()=>{model.frictionProp.value = Number(window.prompt("Enter value for friction:"));reset();})
@@ -615,7 +655,8 @@ export default class BeadOnHoopScreenView extends ScreenView {
     buttonTheta.lazyLink(()=>{model.thetaProp.value = Number(window.prompt("Enter value for theta:"));reset();})
     buttonVelocity.lazyLink(()=>{model.velocityProp.value = Number(window.prompt("Enter value for velocity:"));reset();})
     buttonSimSpeed.lazyLink(()=>{model.simSpeedProp.value = Number(window.prompt("Enter value for simulation speed:"));})
-
+    visualBox.leftTop = new phet.dot.Vector2(this.layoutBounds.maxX/1.5,resetAllButton.centerTop.y-resetAllButton.height);
+    // visualBox.leftBottom = new phet.dot.Vector2(50,50)
   }
 
   public override layout( viewBounds: Bounds2 ): void {
@@ -629,20 +670,8 @@ export default class BeadOnHoopScreenView extends ScreenView {
     this.sceneNode.layout( viewBounds.width, viewBounds.height );
 
     // We need to do an initial render for certain layout-based code to work
-    this.sceneNode.render( undefined );
-    this.thetaBox.detach();
-    this.addChild(this.thetaBox)
-    this.velBox.detach();
-    this.addChild(this.velBox)
-    
-    this.buttonAddThetaDOM.centerBottom = new phet.dot.Vector2(this.velBox.x+30, this.velBox.y-15 );
-    this.buttonAddOmegaDOM.centerBottom = new phet.dot.Vector2(this.buttonAddThetaDOM.centerBottom.x + 50, this.buttonAddThetaDOM.centerBottom.y);
-    const thetaLabel = new RichText('θ');
-    thetaLabel.center = new phet.dot.Vector2(this.buttonAddThetaDOM.center.x,this.buttonAddThetaDOM.center.y)
-    this.addChild(thetaLabel)
-    const omegaLabel = new RichText('ω');
-    omegaLabel.center = new phet.dot.Vector2(this.buttonAddOmegaDOM.center.x,this.buttonAddOmegaDOM.center.y)
-    this.addChild(omegaLabel)
+    this.sceneNode.render( undefined ); 
+
   }
 
   /**
@@ -784,10 +813,10 @@ export default class BeadOnHoopScreenView extends ScreenView {
       this.testVelocityGraph = new phet.scenery.DOM(drawVelocity( this.model.graphDataTest, this.model.graphLen, 'staticSim-velocity', 'test',this.graphSize));
       this.rootNode.addChild(this.testVelocityGraph);
 
-      this.refVelocityGraph.centerBottom = new phet.dot.Vector2( (window.innerWidth*2.7) / 4, window.innerHeight/2-20 );
-      this.testVelocityGraph.centerBottom = new phet.dot.Vector2( (window.innerWidth*2.7) / 4, window.innerHeight*1.8/2-20 );
-      this.refThetaGraph.centerBottom = new phet.dot.Vector2( this.testVelocityGraph.leftBottom.x + this.graphSize*1.45, window.innerHeight/2-20 );
-      this.testThetaGraph.centerBottom = new phet.dot.Vector2( this.testVelocityGraph.leftBottom.x + this.graphSize*1.45, window.innerHeight*1.8/2-20 );
+      this.refVelocityGraph.centerBottom = new phet.dot.Vector2( (window.innerWidth*2.7) / 4, window.innerHeight/2.2-20 );
+      this.testVelocityGraph.centerBottom = new phet.dot.Vector2( (window.innerWidth*2.7) / 4, window.innerHeight*1.8/2.2-20 );
+      this.refThetaGraph.centerBottom = new phet.dot.Vector2( this.testVelocityGraph.leftBottom.x + this.graphSize*1.45, window.innerHeight/2.2-20 );
+      this.testThetaGraph.centerBottom = new phet.dot.Vector2( this.testVelocityGraph.leftBottom.x + this.graphSize*1.45, window.innerHeight*1.8/2.2-20 );
     }
     
     
